@@ -142,3 +142,24 @@ SELECT MIN(Num_Depend), MAX(Num_Depend), AVG(Num_Depend) FROM demographics; # Mi
 ######## LOCATION ##############
 
 SELECT * FROM location;
+
+# Customer_ID
+SELECT DISTINCT Customer_ID FROM location; # All unique codes
+
+# Count
+SELECT Count, COUNT(*) FROM location GROUP BY Count;
+ALTER TABLE location DROP COLUMN Count;
+
+# Country
+SELECT DISTINCT Country FROM location;
+ALTER TABLE location DROP COLUMN Country;
+
+# State
+SELECT DISTINCT State FROM location;
+ALTER TABLE location DROP COLUMN State;
+
+# Country
+SELECT DISTINCT City FROM location;
+
+ALTER TABLE location MODIFY COLUMN Latitude DECIMAL(13,10);
+ALTER TABLE location MODIFY COLUMN Longitude DECIMAL(13,10);
