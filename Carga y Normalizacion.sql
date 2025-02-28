@@ -100,66 +100,105 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES; 
                  
                  
-####################### NORMALIZACION #######################
+#################################### NORMALIZACION #########################################################
 
-######## DEMOGRAPHICS ##############
+######## DEMOGRAPHICS ######################################################################
 
 SELECT * FROM demographics;
 
 # Customer_ID
-SELECT DISTINCT Customer_ID FROM demographics; # All unique codes
+SELECT DISTINCT Count(Customer_ID) FROM demographics; # All unique codes
 
 # Count
-SELECT Count, COUNT(*) FROM demographics GROUP BY Count;
+SELECT Count, COUNT(*) FROM demographics GROUP BY Count; # All "1"
 ALTER TABLE demographics DROP COLUMN Count;
 
 # Gender Normalization
-SELECT DISTINCT Gender FROM demographics;
+SELECT Gender, COUNT(*) FROM demographics GROUP BY Gender; # Female: 3488, Male: 3555
 UPDATE demographics SET Gender = 'F' WHERE Gender = 'Female';
 UPDATE demographics SET Gender = 'M' WHERE Gender = 'Male';
 
 # Age statistics
 SELECT Age, COUNT(*) FROM demographics GROUP BY Age;
 SELECT MIN(Age), MAX(Age), AVG(Age) FROM demographics; # Min: 19, Max: 119, Avg: 47.47 
-SELECT COUNT(*) FROM demographics WHERE Age > 80; # 110 Rows
+SELECT COUNT(*) FROM demographics WHERE Age > 100; # 109 Rows
 
 # Under 30
-SELECT DISTINCT Under_30 FROM demographics;
+SELECT Under_30, COUNT(*) FROM demographics GROUP BY Under_30; # Yes: 1401, No: 5642
+UPDATE demographics SET Under_30 = 1 WHERE Under_30 = 'Yes';
+UPDATE demographics SET Under_30 = 0 WHERE Under_30 = 'No';
 
 # Sr_Citizen
-SELECT DISTINCT Sr_Citizen FROM demographics;
+SELECT Sr_Citizen, COUNT(*) FROM demographics GROUP BY Sr_Citizen; # Yes: 1142, No: 5901
+UPDATE demographics SET Sr_Citizen = 1 WHERE Sr_Citizen = 'Yes';
+UPDATE demographics SET Sr_Citizen = 0 WHERE Sr_Citizen = 'No';
 
 # Married
-SELECT DISTINCT Married FROM demographics;
+SELECT Married, COUNT(*) FROM demographics GROUP BY Married; # Yes: 3402, No: 3641
+UPDATE demographics SET Married = 1 WHERE Married = 'Yes';
+UPDATE demographics SET Married = 0 WHERE Married = 'No';
 
 # Depend
-SELECT DISTINCT Depend FROM demographics;
+SELECT Depend, COUNT(*) FROM demographics GROUP BY Depend; # Yes: 1627, No: 5416
+UPDATE demographics SET Depend = 1 WHERE Depend = 'Yes';
+UPDATE demographics SET Depend = 0 WHERE Depend = 'No';
 
 # Num_Depend
 SELECT Num_Depend, COUNT(*) FROM demographics GROUP BY Num_Depend;
-SELECT MIN(Num_Depend), MAX(Num_Depend), AVG(Num_Depend) FROM demographics; # Min: 0, Max: 9, Avg: 0.4687
+SELECT MIN(Num_Depend), MAX(Num_Depend), AVG(Num_Depend), SUM(Num_Depend) FROM demographics; # Min: 0, Max: 9, Avg: 0.4687, Total: 3301
 
-######## LOCATION ##############
+SELECT SUM(Num_Depend) FROM demographics WHERE Depend = 0; # All '0' for No Dependents
+
+######## LOCATION ######################################################################
 
 SELECT * FROM location;
 
 # Customer_ID
-SELECT DISTINCT Customer_ID FROM location; # All unique codes
+SELECT DISTINCT Count(Customer_ID) FROM location; # All unique codes
 
 # Count
-SELECT Count, COUNT(*) FROM location GROUP BY Count;
+SELECT Count, COUNT(*) FROM location GROUP BY Count; # All "1"
 ALTER TABLE location DROP COLUMN Count;
 
 # Country
 SELECT DISTINCT Country FROM location;
-ALTER TABLE location DROP COLUMN Country;
+ALTER TABLE location DROP COLUMN Country; # All "United States"
 
 # State
 SELECT DISTINCT State FROM location;
-ALTER TABLE location DROP COLUMN State;
+ALTER TABLE location DROP COLUMN State; # All "California"
 
-# Country
-SELECT DISTINCT City FROM location;
+# City
+SELECT DISTINCT City FROM location; # 1106 Cities
 
-ALTER TABLE location MODIFY COLUMN Latitude DECIMAL(13,10);
-ALTER TABLE location MODIFY COLUMN Longitude DECIMAL(13,10);
+# ZipCode
+SELECT DISTINCT Zip_Code FROM population; # 1671 ZipCodes
+
+# Latitude and Longitude to numeric
+ALTER TABLE location MODIFY COLUMN Latitude DECIMAL(13,7);
+ALTER TABLE location MODIFY COLUMN Longitude DECIMAL(13,7);
+
+######## POPULATION ######################################################################
+
+SELECT * FROM population; # 1671 rows
+
+# ID
+SELECT ID, COUNT(*) FROM population GROUP BY ID; # All unique IDs
+
+# ZipCode
+SELECT Zip_Code, COUNT(*) FROM population GROUP BY Zip_Code; # All unique ZipCodes
+
+# Populaltion
+SELECT MIN(Popu), MAX(Popu), AVG(Popu), SUM(Popu) FROM population; # Min: 11, Max: 105.285, Avg: 20.276,38, Total: 33.881.838
+
+######## SERVICES ######################################################################
+
+SELECT * FROM services;
+
+# Customer_ID
+SELECT DISTINCT Count(Customer_ID) FROM services; # All unique codes
+
+# Count
+SELECT Count, COUNT(*) FROM services GROUP BY Count; # All "1"
+ALTER TABLE services DROP COLUMN Count;
+
